@@ -8,36 +8,40 @@ import (
 )
 
 type Invoice struct {
-	ID string
+	ID   string `bson:"_id"`
+	Name string `bson:"name"`
 }
 
-func createInvoice(repository Data) func(c echo.Context) error {
+func createInvoice(data Data) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		var input Invoice
 		if err := c.Bind(&input); err != nil {
-			c.Logger().Errorf("bind input create invoice: %w", err)
-			return c.JSON(http.StatusBadRequest, JSONError{Message: "input"})
+			return c.JSON(http.StatusBadRequest, cJSONError(c, err, "input", "bind create invoice"))
 		}
-		output, err := repository.CreateInvoice(ctx, &input)
+		output, err := data.CreateInvoice(ctx, &input)
 		if err != nil {
-			if errors.Is(ErrAlreadyExists, err) {
-				return c.JSON(http.StatusConflict, JSONError{Message: "conflict"})
+			if errors.Is(err, ErrAlreadyExists) {
+				return c.JSON(http.StatusConflict, jsonError{
+					Message: "Conflict",
+				})
 			}
+			return cJSONError(c, err, "set_invoice_data", "repository create invoice")
 		}
 		return c.JSON(http.StatusOK, output)
 	}
 }
 
-func getInvoice(repository Data) func(c echo.Context) error {
+func getInvoice(data Data) func(c echo.Context) error {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		id := c.Param("id")
-		output, err := repository.GetInvoice(ctx, id)
+		id := c.Param(invoiceParam)
+		output, err := data.GetInvoice(ctx, id)
 		if err != nil {
-			if errors.Is(ErrAlreadyExists, err) {
-				return c.JSON(http.StatusConflict, JSONError{Message: "conflict"})
+			if errors.Is(ErrNotFound, err) {
+				return c.JSON(http.StatusNotFound, "Not Found")
 			}
+			return cJSONError(c, err, "get_invoice_data", "repository get invoice")
 		}
 		return c.JSON(http.StatusOK, output)
 	}

@@ -6,7 +6,8 @@ import (
 	"os/signal"
 )
 
-func New() (context.Context, func()) {
+// NewContext provide a context cancel on os signal SIGINT.
+func NewContext() (context.Context, func()) {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt)
 	ctx, cancel := context.WithCancel(context.Background())

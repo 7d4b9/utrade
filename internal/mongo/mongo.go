@@ -24,6 +24,7 @@ func init() {
 
 type Client struct {
 	*mongo.Client
+	dbName string
 }
 
 func NewClient(ctx context.Context) (*Client, error) {
@@ -36,10 +37,10 @@ func NewClient(ctx context.Context) (*Client, error) {
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
 		return nil, fmt.Errorf("mongo ping: %w", err)
 	}
-	return &Client{Client: client}, nil
+	dbName := Config.GetString(DBNameConfig)
+	return &Client{Client: client, dbName: dbName}, nil
 }
 
-func (c *Client) Database() *mongo.Database {
-	dbName := Config.GetString(DBNameConfig)
-	return c.Client.Database(dbName)
+func (c *Client) Invoices() *mongo.Collection {
+	return c.Client.Database(c.dbName).Collection("invoices")
 }

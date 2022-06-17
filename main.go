@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.New()
+	ctx, cancel := context.NewContext()
 	defer cancel()
 	// Create a new client and connect to the server
 	client, err := mongo.NewClient(ctx)
@@ -20,7 +20,7 @@ func main() {
 			panic(err)
 		}
 	}()
-	data, err := data.NewData(client.Database())
+	data, err := data.NewData(client.Invoices())
 	if err != nil {
 		panic(err)
 	}

@@ -2,9 +2,10 @@ version: '3'
 services:
   database:
     image: 'mongo'
-    container_name: 'my-mongo-container' # give your contatner a name
     environment:
-      - MONGO_INITDB_DATABASE=database-name # database name you want to make
+      - MONGO_INITDB_DATABASE=database-name
+    ports:
+      - 27017:27017
   app:
     volumes:
       - ${PWD}:${PWD}

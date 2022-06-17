@@ -39,17 +39,17 @@ type Data interface {
 	CreateInvoice(ctx context.Context, in *Invoice) (out *Invoice, err error)
 }
 
-func RunServer(ctx context.Context, repository Data) {
+func RunServer(ctx context.Context, data Data) {
 
 	// Echo instance
 	e := echo.New()
+
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	// Routes
-	e.GET("/api/v1/workspace/:workspace/invoice/:invoice_id", getInvoice(repository))
-	e.POST("/api/v1/workspace/:workspace/invoices", createInvoice(repository))
+	addRoutes(e, data)
 
 	// Start server
 	exited := make(chan struct{})
@@ -66,4 +66,14 @@ func RunServer(ctx context.Context, repository Data) {
 	case <-exited:
 	}
 	<-exited
+}
+
+const (
+	workspaceParam = "workspace"
+	invoiceParam   = "invoice"
+)
+
+func addRoutes(e *echo.Echo, data Data) {
+	e.GET("/api/v1/workspace/:"+workspaceParam+"/invoice/:"+invoiceParam+"", getInvoice(data))
+	e.POST("/api/v1/workspace/:"+workspaceParam+"/invoices", createInvoice(data))
 }
