@@ -1,0 +1,20 @@
+version: '3'
+services:
+  database:
+    image: 'mongo'
+    container_name: 'my-mongo-container' # give your contatner a name
+    environment:
+      - MONGO_INITDB_DATABASE=database-name # database name you want to make
+  app:
+    volumes:
+      - ${PWD}:${PWD}
+    working_dir: ${PWD}
+    image: 'golang'
+    links:
+    - database
+    environment:
+      - MONGO_URI=mongodb://database:27017
+      - MONGO_DB_NAME=database-name
+    command: go run .
+    ports:
+    - 8080:1323
