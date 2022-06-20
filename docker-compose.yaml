@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    image: 'mongo'
+    image: mongo:5.0.9
     environment:
       - MONGO_INITDB_DATABASE=database-name
     ports:
@@ -10,9 +10,7 @@ services:
     volumes:
       - ${PWD}:${PWD}
     working_dir: ${PWD}
-    image: 'golang'
-    links:
-    - database
+    image: golang:1.18
     environment:
       - MONGO_URI=mongodb://database:27017
       - MONGO_DB_NAME=database-name

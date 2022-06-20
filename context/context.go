@@ -16,7 +16,8 @@ func NewContext() (context.Context, func()) {
 		defer close(done)
 		select {
 		case <-s: // catched os signals
-		case <-ctx.Done(): // exit from cancel func
+			cancel() // cancel returned context
+		case <-ctx.Done(): // exit from returned func
 		}
 	}()
 	return ctx, func() {
