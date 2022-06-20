@@ -4,21 +4,15 @@ import (
 	"context"
 	"errors"
 
+	"github.com/7d4b9/utrade/http"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/spf13/viper"
 )
 
-var Config = viper.New()
-
-const (
-	shutdownTimeoutConfig = "shutdown_timeout"
-)
-
-func init() {
-	Config.SetDefault(shutdownTimeoutConfig, "10s")
-	Config.SetEnvPrefix("http")
-	Config.AutomaticEnv()
+// RunServer configures and starts the http server.
+func RunServer(ctx context.Context, data Data) {
+	e := echo.New()
+	addRoutes(e, data)
+	http.RunServer(ctx, e)
 }
 
 var (
@@ -37,35 +31,6 @@ type Data interface {
 	// CreateInvoice create a new invoice. If the invoice cannot be created
 	// due to a conflict with an existing data ErrAlreadyExists is expected.
 	CreateInvoice(ctx context.Context, in *Invoice) (out *Invoice, err error)
-}
-
-func RunServer(ctx context.Context, data Data) {
-
-	// Echo instance
-	e := echo.New()
-
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	// Routes
-	addRoutes(e, data)
-
-	// Start server
-	exited := make(chan struct{})
-	go func() {
-		defer close(exited)
-		e.Logger.Printf("http server exited: %w", e.Start(":1323"))
-	}()
-	shutdownTimeout := Config.GetDuration(shutdownTimeoutConfig)
-	shutdownCtx, cancelShutdown := context.WithTimeout(context.Background(), shutdownTimeout)
-	defer cancelShutdown()
-	select {
-	case <-ctx.Done():
-		e.Logger.Printf("http server shutdown: %w", e.Shutdown(shutdownCtx))
-	case <-exited:
-	}
-	<-exited
 }
 
 const (
