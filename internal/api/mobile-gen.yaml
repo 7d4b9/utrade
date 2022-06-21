@@ -1,0 +1,9 @@
+--- 
+embedded-spec: true
+generate: 
+  - types
+  - client
+  - skip-prune
+models: true
+output: mobile.gen.go
+package: api
