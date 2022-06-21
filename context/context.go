@@ -6,22 +6,27 @@ import (
 	"os/signal"
 )
 
-// NewContext provide a context cancel on os signal SIGINT.
-func NewContext() (context.Context, func()) {
+// NewContext provides a context automatically canceled on os signal SIGINT.
+// Canceling this context releases resources associated with it, so code should
+// call cancel as soon as the operations running in this Context complete.
+func NewContext() (ctx context.Context, cancel context.CancelFunc) {
+	ctx, cancel = context.WithCancel(context.Background())
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt)
-	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
 		select {
-		case <-s: // catched os signals
-			cancel() // cancel returned context
-		case <-ctx.Done(): // exit from returned func
+		case <-s: // Interrupt
+			// cancel returned context
+			cancel()
+		case <-ctx.Done(): // primary exit triggered from returned stop function
 		}
 	}()
-	return ctx, func() {
+	// overload primary cancel to release local resources.
+	cancel = func() {
 		cancel()
 		<-done
 	}
+	return ctx, cancel
 }

@@ -1,0 +1,6027 @@
+---
+openapi: "3.0.1"
+info:
+  title: "Mobile API"
+  version: "v1"
+paths:
+  /api/v1/Account/UserAccounts:
+    get:
+      tags:
+      - "Account"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/UserAccount"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Account/multipleaccountpopup:
+    get:
+      tags:
+      - "Account"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MultipleAccountResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                      - "Account does not qualify for multiple account."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Account/multipleaccountpopup"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Account/multipleaccountpopup/wasdisplayed:
+    post:
+      tags:
+      - "Account"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "multipleAccountPopUpId"
+        in: "query"
+        schema:
+          type: "integer"
+          format: "int32"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "multipleAccountPopUpId must be a positive integer."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Account/multipleaccountpopup/wasdisplayed"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/AdditionalCard:
+    post:
+      tags:
+      - "AdditionalCard"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/AdditionalCardRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdditionalCardRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/AdditionalCardRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/AdditionalCardRequest"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdditionalCardResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+                firstName:
+                  value:
+                    errors:
+                      firstName:
+                      - "First Name cannot be blank."
+                      - "First Name can contain letters(a-z, A-Z), spaces, hyphens(-)\
+                        \ and periods(.) only."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+                lastName:
+                  value:
+                    errors:
+                      lastName:
+                      - "Last Name cannot be blank."
+                      - "Last Name can contain letters(a-z, A-Z), spaces, hyphens(-)\
+                        \ and periods(.) only."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+                dob:
+                  value:
+                    errors:
+                      dob:
+                      - "Date of Birth cannot be blank."
+                      - "Additional Cardholder must be at least 13 years of age."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+                NameGreaterThan21:
+                  value:
+                    errors:
+                      NameGreaterThan21:
+                      - "Name cannot be greater than 21 characters."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+                RequestSameAsPrimary:
+                  value:
+                    errors:
+                      RequestSameAsPrimary:
+                      - "Additional Cardholder cannot be the same as the Primary Cardholder."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    get:
+      tags:
+      - "AdditionalCard"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdditionalCardCmsResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/AdditionalCard"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Analytics/meta:
+    get:
+      tags:
+      - "Analytics"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/BankAccountName:
+    get:
+      tags:
+      - "BankAccountName"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "abaNumber"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccountNameResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/BankAccountName"
+                abaNumber:
+                  value:
+                    errors:
+                      abaNumber:
+                      - "Invalid Routing Number."
+                      - "Routing Number is for a money order and cannot be used."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/BankAccountName"
+                abaNumberBlank:
+                  value:
+                    errors:
+                      abaNumberBlank:
+                      - "Routing Number must be filled in."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/BankAccountName"
+                abaNumberLength:
+                  value:
+                    errors:
+                      abaNumberLength:
+                      - "Routing Number must be 9 digits."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/BankAccountName"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Cms/{pageName}:
+    get:
+      tags:
+      - "Cms"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "pageName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+        examples:
+          PaymentMobilePage:
+            value: "PaymentMobilePage"
+          AccountSummaryMobilePage:
+            value: "AccountSummaryMobilePage"
+          ApplicationStatusPage:
+            value: "ApplicationStatusPage"
+          StatementMobilePage:
+            value: "StatementMobilePage"
+          GlobalCollateralMultipleAccountPopupConfigurationPage:
+            value: "GlobalCollateralMultipleAccountPopupConfigurationPage"
+          AccountActivityPage:
+            value: "AccountActivityPage"
+          AccountTransactionHistoryPage:
+            value: "AccountTransactionHistoryPage"
+          RequestPinMobilePage:
+            value: "RequestPinMobilePage"
+          DisputeTransactionMobilePage:
+            value: "DisputeTransactionMobilePage"
+          CreditLineIncreaseMobilePage:
+            value: "CreditLineIncreaseMobilePage"
+          LettersMobilePage:
+            value: "LettersMobilePage"
+          GlobalImageDataConfigurationPage:
+            value: "GlobalImageDataConfigurationPage"
+          GlobalCollateralIntermediateWarningConfigurationPage:
+            value: "GlobalCollateralIntermediateWarningConfigurationPage"
+          UpdateProfilePage:
+            value: "UpdateProfilePage"
+          CommunicationSettingsPage:
+            value: "CommunicationSettingsPage"
+          HelpPage:
+            value: "HelpPage"
+          ContactUsPage:
+            value: "ContactUsPage"
+          AboutUsPage:
+            value: "AboutUsPage"
+          GlobalCollateralSystemOptionsConfigurationPage:
+            value: "GlobalCollateralSystemOptionsConfigurationPage"
+          ConsumerAlertPage:
+            value: "ConsumerAlertPage"
+          GlobalCollateralFormsAndMaterialsConfigurationPage:
+            value: "GlobalCollateralFormsAndMaterialsConfigurationPage"
+          DisclosurePage:
+            value: "DisclosurePage"
+          CurrentCreditCardOffersPage:
+            value: "CurrentCreditCardOffersPage"
+          EnrollmentPage:
+            value: "EnrollmentPage"
+          InquiryMobilePage:
+            value: "InquiryMobilePage"
+          AdditionalCardMobilePage:
+            value: "AdditionalCardMobilePage"
+          ChangePasswordMobilePage:
+            value: "ChangePasswordMobilePage"
+          LinkYourAccountsPage:
+            value: "LinkYourAccountsPage"
+          FaqPage:
+            value: "FaqPage"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/AboutUsPageConfiguration"
+                - $ref: "#/components/schemas/AccountSummaryMobilePageConfiguration"
+                - $ref: "#/components/schemas/ActivityPageConfiguration"
+                - $ref: "#/components/schemas/AdditionalCardMobilePageConfiguration"
+                - $ref: "#/components/schemas/ApplicationStatusPageConfiguration"
+                - $ref: "#/components/schemas/ChangePasswordMobilePageConfiguration"
+                - $ref: "#/components/schemas/CommunicationSettingsPageConfiguration"
+                - $ref: "#/components/schemas/CommunicationSettingsPageViewModel"
+                - $ref: "#/components/schemas/ConsumerAlertPageConfiguration"
+                - $ref: "#/components/schemas/ContactUsViewModel"
+                - $ref: "#/components/schemas/CreditLineIncreaseMobilePageConfiguration"
+                - $ref: "#/components/schemas/CurrentCreditCardAgreementsPageConfiguration"
+                - $ref: "#/components/schemas/DisclosuresPageViewModel"
+                - $ref: "#/components/schemas/DisputeTransactionMobilePageConfiguration"
+                - $ref: "#/components/schemas/EnrollmentPageViewModel"
+                - $ref: "#/components/schemas/FaqPageViewModel"
+                - $ref: "#/components/schemas/GlobalCollateralFormsAndMaterialsConfiguration"
+                - $ref: "#/components/schemas/GlobalCollateralMultipleAccountPopupConfiguration"
+                - $ref: "#/components/schemas/GlobalImageDataConfiguration"
+                - $ref: "#/components/schemas/HelpPageViewModel"
+                - $ref: "#/components/schemas/InquiryMainPageConfiguration"
+                - $ref: "#/components/schemas/IntermediateWarning"
+                - $ref: "#/components/schemas/LettersMobilePageConfiguration"
+                - $ref: "#/components/schemas/LinkYourAccountsPageConfiguration"
+                - $ref: "#/components/schemas/MultipleAccountPopUpMobile"
+                - $ref: "#/components/schemas/PaymentMobilePageConfiguration"
+                - $ref: "#/components/schemas/RequestPinMobilePageConfiguration"
+                - $ref: "#/components/schemas/StatementsMobilePageConfiguration"
+                - $ref: "#/components/schemas/SystemOptions"
+                - $ref: "#/components/schemas/TransactionHistoryPageConfiguration"
+                - $ref: "#/components/schemas/UpdateProfilePageConfiguration"
+        "404":
+          description: "A page with the requested name was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              example:
+                errors:
+                  InvalidSession:
+                  - "We were unable to process your request. Please check back later."
+                  InvalidUsername:
+                  - "Your username must be between eight and thirty-two characters\
+                    \ in length."
+                  - "Your username is either missing or invalid.Please verify your\
+                    \ information and try again."
+                  InvalidPassword:
+                  - "An invalid password has been entered. Your password must be between\
+                    \ eight(8) and sixty-four(64) characters and must include both\
+                    \ upper and lower case letters and a number or special character.\
+                    \ Please enter a new password and try again."
+                  InvalidEmail:
+                  - "The email address is either missing or invalid.Please verify\
+                    \ your information and try again."
+                  UsernameAlreadyUsed:
+                  - "Username already used."
+                title: "One or more validation errors occurred."
+  /api/v1/ContextualMessaging/alerts/meta:
+    get:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ContextualAlertsMeta"
+              example:
+              - alertCode: "APCL"
+                alertName: "Approaching Credit Limit"
+                alertDescription: "Alert set when the transaction brings the credit\
+                  \ amount above the cardholders set amount"
+                displayOrderNum: 0
+                isMandatory: false
+                threshold: 0.0
+                alertCategory: ""
+        "503":
+          description: "Contextual Management Alerts is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Alerts is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/alerts/meta"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/alerts/subscriptions:
+    get:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ContextualSubscriptions"
+              example:
+              - cardMask: "XXXX XXXX XXXX 1761"
+                phoneNumber: "12345678765"
+                alertSubscriptions:
+                - alertCode: "APCL"
+                  alertName: "Approaching Credit Limit"
+                  alertDescription: "Alert set when the transaction brings the credit\
+                    \ amount above the cardholders set amount"
+                  threshold: 0
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/alerts/subscriptions"
+        "503":
+          description: "Contextual Management Alerts is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Alerts is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/alerts/subscriptions"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/alerts/enable:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsEnableRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsEnableRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsEnableRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsEnableRequest"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/alerts/enable"
+        "503":
+          description: "Contextual Management Alerts is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Alerts is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/alerts/enable"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/alerts/disable:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDisableRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDisableRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDisableRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDisableRequest"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/alerts/disable"
+        "503":
+          description: "Contextual Management Alerts is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Alerts is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/alerts/disable"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/alerts/destination:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDestinationRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDestinationRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDestinationRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualAlertsDestinationRequest"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/alerts/destination"
+        "503":
+          description: "Contextual Management Alerts is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Alerts is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/alerts/destination"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/controls/lock:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsLockRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsLockRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsLockRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsLockRequest"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/controls/lock"
+        "503":
+          description: "Contextual Management Controls is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Controls is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/controls/lock"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/controls/unlock:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsUnlockRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsUnlockRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsUnlockRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsUnlockRequest"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/controls/unlock"
+        "503":
+          description: "Contextual Management Controls is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Controls is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/controls/unlock"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/ContextualMessaging/controls/status:
+    post:
+      tags:
+      - "ContextualMessaging"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsStatusRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsStatusRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsStatusRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ContextualControlsStatusRequest"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContextualControlsStatus"
+              example:
+                isLocked: false
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/ContextualMessaging/controls/status"
+        "503":
+          description: "Contextual Management Controls is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Contextual Management Controls is currently unavailable."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/ContextualMessaging/controls/status"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/CreditCardAgreements:
+    get:
+      tags:
+      - "CreditCardAgreements"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/CreditCardAgreements"
+  /api/v1/CreditLineIncrease:
+    get:
+      tags:
+      - "CreditLineIncrease"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditLineIncreaseResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/CreditLineIncrease"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DeliveryPreferences:
+    get:
+      tags:
+      - "DeliveryPreferences"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ElectronicDeliveryPreferences"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DeliveryPreferences/unenroll:
+    put:
+      tags:
+      - "DeliveryPreferences"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "unenrollStatements"
+        in: "query"
+        schema:
+          type: "boolean"
+      - name: "unenrollDocuments"
+        in: "query"
+        schema:
+          type: "boolean"
+      - name: "allAccounts"
+        in: "query"
+        schema:
+          type: "boolean"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences/unenroll"
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Missing Query Parameter: unenrollStatements and unenrollDocuments"
+                      - "Missing Query Parameter: allAccounts"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences/unenroll"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DeliveryPreferences/enroll:
+    put:
+      tags:
+      - "DeliveryPreferences"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "enrollStatements"
+        in: "query"
+        schema:
+          type: "boolean"
+      - name: "enrollDocuments"
+        in: "query"
+        schema:
+          type: "boolean"
+      - name: "allAccounts"
+        in: "query"
+        schema:
+          type: "boolean"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences/enroll"
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Missing Query Parameter: enrollStatements and enrollDocuments"
+                      - "Missing Query Parameter: allAccounts"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences/enroll"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DeliveryPreferences/landingpage:
+    put:
+      tags:
+      - "DeliveryPreferences"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DeliveryPreferences/landingpage"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Documents:
+    get:
+      tags:
+      - "Documents"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccountCreateResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Documents"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Documents/{documentId}:
+    get:
+      tags:
+      - "Documents"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "documentId"
+        in: "path"
+        required: true
+        schema:
+          type: "integer"
+          format: "int32"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentContents"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DocUpload:
+    post:
+      tags:
+      - "DocUpload"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - "AccountHandle"
+              - "Files"
+              type: "object"
+              properties:
+                AccountHandle:
+                  type: "string"
+                  example: "string"
+                DocumentReasonId:
+                  maximum: 2147483647
+                  minimum: 1
+                  type: "integer"
+                  format: "int32"
+                  example: 3
+                Files:
+                  type: "array"
+                  items:
+                    type: "string"
+                    format: "binary"
+            encoding:
+              AccountHandle:
+                style: "form"
+              DocumentReasonId:
+                style: "form"
+              Files:
+                style: "form"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DocUpload"
+                Files:
+                  value:
+                    errors:
+                      Files:
+                      - "Number of attached files must be 10 or fewer."
+                      - "Error for document ({trustedFileNameForDisplay}): File size\
+                        \ is greater than what is acceptable."
+                      - "Error for document ({trustedFileNameForDisplay}): File is\
+                        \ empty."
+                      - "Error for document ({trustedFileNameForDisplay}): File format\
+                        \ is not permitted."
+                      - "Daily upload limit reached or exceeded"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DocUpload"
+        "503":
+          description: "Document Upload is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Upload documents is currently unavailable. Documents may\
+                        \ be sent in via fax at this number (605) 357-3438  or mailed\
+                        \ to First PREMIER Bank, PO Box 5524, Sioux Falls, SD 57117-5524."
+                      - "Upload documents is currently unavailable. Documents may\
+                        \ be sent in via fax at this number (888) 604-9428  or mailed\
+                        \ to First PREMIER Bank, PO Box 5515, Sioux Falls, SD 57117-5515."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/DocUpload"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/DocUpload/DocumentReasons:
+    get:
+      tags:
+      - "DocUpload"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentReasons"
+              example:
+              - Id: 6
+                Title: "Name Change"
+              - Id: 12
+                Title: "Power of Attorney"
+        "400":
+          description: "Bad Request."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/DocUpload/DocumentReasons"
+        "503":
+          description: "Document Upload is currently unavailable."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                ExceptionText:
+                  value:
+                    errors:
+                      ExceptionText:
+                      - "Upload documents is currently unavailable. Documents may\
+                        \ be sent in via fax at this number (605) 357-3438  or mailed\
+                        \ to First PREMIER Bank, PO Box 5524, Sioux Falls, SD 57117-5524."
+                      - "Upload documents is currently unavailable. Documents may\
+                        \ be sent in via fax at this number (888) 604-9428  or mailed\
+                        \ to First PREMIER Bank, PO Box 5515, Sioux Falls, SD 57117-5515."
+                    title: "One or more validation errors occurred."
+                    status: 503
+                    instance: "api/v1/DocUpload/DocumentReasons"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Enrollment/ValidateIdentity:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentVerificationNumbers"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentVerificationNumbers"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentVerificationNumbers"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentVerificationNumbers"
+      responses:
+        "200":
+          description: "Identity was validated successfully"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+        "422":
+          description: "Identity validation failed"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                InvalidSsn:
+                  value:
+                    errors:
+                      InvalidSsn:
+                      - "The social security number is either missing or invalid.\
+                        \ Please try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                InvalidVerificationNumber:
+                  value:
+                    errors:
+                      InvalidVerificationNumber:
+                      - "The credit card or reference number is either missing or\
+                        \ invalid. Please verify your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                TooManyAttempts:
+                  value:
+                    errors:
+                      TooManyAttempts:
+                      - ""
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                SsnVerificationNumberMismatch:
+                  value:
+                    errors:
+                      SsnVerificationNumberMismatch:
+                      - "The information entered does not match our records. Please\
+                        \ verify your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                AccountAlreadyEnrolled:
+                  value:
+                    errors:
+                      AccountAlreadyEnrolled:
+                      - "You are already enrolled in PREMIER Online. Please login\
+                        \ or use the Forgot Password or Forgot Username options."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+                UnavailableAccount:
+                  value:
+                    errors:
+                      UnavailableAccount:
+                      - "Login is not available or account expired. If you have questions,\
+                        \ contact our representatives at 1-800-501-4689."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+  /api/v1/Enrollment/ValidateUsername:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProfile"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProfile"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProfile"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProfile"
+      responses:
+        "200":
+          description: "Credentials and email address were validated successfully"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Enrollment/ValidateIdentity"
+        "422":
+          description: "Credentials and/or email validation failed"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateUsername"
+                InvalidUsername:
+                  value:
+                    errors:
+                      InvalidUsername:
+                      - "Your username must be between eight and thirty-two characters\
+                        \ in length."
+                      - "Your username is either missing or invalid.Please verify\
+                        \ your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateUsername"
+                InvalidPassword:
+                  value:
+                    errors:
+                      InvalidPassword:
+                      - "An invalid password has been entered. Your password must\
+                        \ be between eight(8) and sixty-four(64) characters and must\
+                        \ include both upper and lower case letters and a number or\
+                        \ special character. Please enter a new password and try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateUsername"
+                InvalidEmail:
+                  value:
+                    errors:
+                      InvalidEmail:
+                      - "The email address is either missing or invalid.Please verify\
+                        \ your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateUsername"
+                UsernameAlreadyUsed:
+                  value:
+                    errors:
+                      UsernameAlreadyUsed:
+                      - "Username already used."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/ValidateUsername"
+  /api/v1/Enrollment/AcceptTerms:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/AcceptTermsRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptTermsRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/AcceptTermsRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/AcceptTermsRequest"
+      responses:
+        "200":
+          description: "Returns a one time access code the client can use to login\
+            \ after registration"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnrollmentAcceptTerms"
+        "202":
+          description: "Request was accepted but has not yet been processed"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Enrollment/AcceptTerms"
+        "422":
+          description: "Failed to create account"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/AcceptTerms"
+                UsernameAlreadyUsed:
+                  value:
+                    errors:
+                      UsernameAlreadyUsed:
+                      - "Username already used."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/AcceptTerms"
+                DeclineTerms:
+                  value:
+                    errors:
+                      DeclineTerms:
+                      - ""
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/AcceptTerms"
+  /api/v1/Enrollment/MFAOptions:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/mfaOptionsRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/mfaOptionsRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/mfaOptionsRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/mfaOptionsRequest"
+      responses:
+        "200":
+          description: "Returns options for MFA"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnrollmentMFA"
+        "422":
+          description: "Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/MFAOptions"
+  /api/v1/Enrollment/MFARequestCode:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentRequestCode"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentRequestCode"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentRequestCode"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentRequestCode"
+      responses:
+        "204":
+          description: "Request MFA Code"
+        "422":
+          description: "Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/MFARequestCode"
+  /api/v1/Enrollment/MFAProcessCode:
+    post:
+      tags:
+      - "Enrollment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProcessCode"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProcessCode"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProcessCode"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentProcessCode"
+      responses:
+        "204":
+          description: "Process MFA Code"
+        "422":
+          description: "Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                InvalidSession:
+                  value:
+                    errors:
+                      InvalidSession:
+                      - "We were unable to process your request. Please check back\
+                        \ later."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/MFAProcessCode"
+                InvalidMfaEntered:
+                  value:
+                    errors:
+                      InvalidMfaEntered:
+                      - "We're sorry, but the code you entered is incorrect."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/MFAProcessCode"
+                InvalidMfaTooManyAttempts:
+                  value:
+                    errors:
+                      InvalidMfaTooManyAttempts:
+                      - "We're sorry, but the code you entered is incorrect. Please\
+                        \ request a new code."
+                    title: "One or more validation errors occurred."
+                    status: 422
+                    instance: "api/v1/Enrollment/MFAProcessCode"
+  /api/v1/KnowledgeManagement/articleSummaries:
+    get:
+      tags:
+      - "KnowledgeManagement"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "queryParameters"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeManagement"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              example:
+                errors:
+                  InvalidSession:
+                  - "We were unable to process your request. Please check back later."
+                  InvalidUsername:
+                  - "Your username must be between eight and thirty-two characters\
+                    \ in length."
+                  - "Your username is either missing or invalid.Please verify your\
+                    \ information and try again."
+                  InvalidPassword:
+                  - "An invalid password has been entered. Your password must be between\
+                    \ eight(8) and sixty-four(64) characters and must include both\
+                    \ upper and lower case letters and a number or special character.\
+                    \ Please enter a new password and try again."
+                  InvalidEmail:
+                  - "The email address is either missing or invalid.Please verify\
+                    \ your information and try again."
+                  UsernameAlreadyUsed:
+                  - "Username already used."
+                title: "One or more validation errors occurred."
+  /api/v1/Password:
+    put:
+      tags:
+      - "Password"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordParameters"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordParameters"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordParameters"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordParameters"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Password"
+                CurrentPassword:
+                  value:
+                    errors:
+                      CurrentPassword:
+                      - "The Current Password is either missing or invalid. Please\
+                        \ verify your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Password"
+                DesiredPassword:
+                  value:
+                    errors:
+                      DesiredPassword:
+                      - "New Password cannot be the same as the Current Password."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Password"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Password/verify:
+    post:
+      tags:
+      - "Password"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/VerifyPassword"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPassword"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPassword"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/VerifyPassword"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad Password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Password/verify"
+                CurrentPassword:
+                  value:
+                    errors:
+                      CurrentPassword:
+                      - "The Current Password is either missing or invalid. Please\
+                        \ verify your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Password/verify"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Payment:
+    get:
+      tags:
+      - "Payment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "All Payments were Returned successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    post:
+      tags:
+      - "Payment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreate"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreate"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreate"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreate"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                paymentAmount:
+                  value:
+                    errors:
+                      paymentAmount:
+                      - "Payment amount required."
+                      - "Must be an amount over zero."
+                      - "Payment would create a credit balance."
+                      - "Payment amount was not in correct format.\_ Please enter\
+                        \ a valid amount and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                paymentDate:
+                  value:
+                    errors:
+                      paymentDate:
+                      - "Payment date required"
+                      - "Payment must be for today or later."
+                      - "Cannot have multiple payments on same day."
+                      - "Payments made after 5:00 pm CT must be dated for the following\
+                        \ day."
+                      - "You cannot schedule a payment more than 28 days in advance."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                bankAccount:
+                  value:
+                    errors:
+                      bankAccount:
+                      - "Invalid bank account."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                fraudFound:
+                  value:
+                    errors:
+                      fraudFound:
+                      - "cmsInfo.PaymentPageConfiguration.FraudFoundMessage"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                moneyOrderFound:
+                  value:
+                    errors:
+                      moneyOrderFound:
+                      - "cmsInfo.PaymentPageConfiguration.MoneyOrderFoundMessage"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    delete:
+      tags:
+      - "Payment"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "paymentId"
+        in: "query"
+        schema:
+          type: "integer"
+          format: "int32"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AFTERHOURDELETE:
+                  value:
+                    errors:
+                      AFTERHOURDELETE:
+                      - "Payments cannot be deleted after 3:00 pm Central Time."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+                ONLINEPAYMENTID:
+                  value:
+                    errors:
+                      ONLINEPAYMENTID:
+                      - "An error occured, please check the parameters and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Payment"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/PaymentAccount:
+    get:
+      tags:
+      - "PaymentAccount"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Payment Accounts were Returned successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  oneOf:
+                  - $ref: "#/components/schemas/BankAccountResponse"
+                  - $ref: "#/components/schemas/BankAccountResponseUnMasked"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    post:
+      tags:
+      - "PaymentAccount"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/BankAccountCreate"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankAccountCreate"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/BankAccountCreate"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/BankAccountCreate"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccountCreateResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                abaNumber:
+                  value:
+                    errors:
+                      abaNumber:
+                      - "Routing Number must be filled in."
+                      - "Routing Number must be 9 digits."
+                      - "Invalid Routing Number."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+                accountNumber:
+                  value:
+                    errors:
+                      accountNumber:
+                      - "The Checking Account number must be filled in."
+                      - "Checking account must be all numbers and between 5 and 17\
+                        \ characters"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+                AbaAccountMatch:
+                  value:
+                    errors:
+                      AbaAccountMatch:
+                      - "NOSHOW"
+                      - "The Checking Account Number and Routing Number are the same,\
+                        \ please verify the information."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+                BankAccount:
+                  value:
+                    errors:
+                      BankAccount:
+                      - "The payment information entered matches an account already\
+                        \ enrolled."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+                Account:
+                  value:
+                    errors:
+                      Account:
+                      - "Due to the current status of your account we are unable to\
+                        \ process your PREMIER Online Bill Pay request. We recommend\
+                        \ that you make a guaranteed funds payment by the due date\
+                        \ listed on your statement. For further assistance, please\
+                        \ call Customer Service at 1-800-501-4689."
+                      - "Our records indicate the information entered represents the\
+                        \ routing number from a money order. PREMIER Bankcard does\
+                        \ not allow the use of money orders when utilizing PREMIER\
+                        \ Online Bill Pay."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    delete:
+      tags:
+      - "PaymentAccount"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "bankAccountId"
+        in: "query"
+        schema:
+          type: "integer"
+          format: "int32"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                bankAccountId:
+                  value:
+                    errors:
+                      bankAccountId:
+                      - "The value [bankAccountId] is not valid."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/PaymentAccount"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Plastics:
+    get:
+      tags:
+      - "Plastics"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Plastics were returned successfully."
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/PlasticResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Plastics"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Plastics/ShippingInfo:
+    get:
+      tags:
+      - "Plastics"
+      summary: "For requestDate parameter use requestDate (date and time string) from\
+        \ Get /api/v1/Plastics response."
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "requestDate"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlasticShippingInfoResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Plastics/ShippingInfo"
+                RequestDateException:
+                  value:
+                    errors:
+                      RequestDateException:
+                      - "Request date is missing."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Plastics/ShippingInfo"
+                ShippingDateException:
+                  value:
+                    errors:
+                      ShippingDateException:
+                      - "Shipping date is missing."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Plastics/ShippingInfo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Plastics/Digital/Provision:
+    post:
+      tags:
+      - "Plastics"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/IDIRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IDIRequest"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/IDIRequest"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/IDIRequest"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IDIReturn"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Profile:
+    get:
+      tags:
+      - "Profile"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+    put:
+      tags:
+      - "Profile"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+          application/*+json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdate"
+      responses:
+        "204":
+          description: "Success"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                address1:
+                  value:
+                    errors:
+                      address1:
+                      - "The Address is either missing or invalid.\_ Please verify\
+                        \ your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                address2:
+                  value:
+                    errors:
+                      address2:
+                      - "The Address2 is either missing or invalid.\_ Please verify\
+                        \ your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                city:
+                  value:
+                    errors:
+                      city:
+                      - "The City is either missing or invalid.\_ Please verify your\
+                        \ information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                state:
+                  value:
+                    errors:
+                      state:
+                      - "The State is either missing or invalid.\_ Please verify your\
+                        \ information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                zipCode:
+                  value:
+                    errors:
+                      zipCode:
+                      - "The Zip Code is either missing or invalid.\_ Please verify\
+                        \ your information and try again."
+                      - "The city or state does not match the zip code. Please re-enter\
+                        \ zip code."
+                      - "The Address cannot be Updated at this Time"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                AddressStandardizationError:
+                  value:
+                    errors:
+                      AddressStandardizationError:
+                      - "AddressStandardizationError"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                homePhone:
+                  value:
+                    errors:
+                      homePhone:
+                      - "The Home Phone number is invalid.\_ Please verify your information\
+                        \ and try again."
+                      - "Home Phone area code is invalid"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                workPhone:
+                  value:
+                    errors:
+                      workPhone:
+                      - "The Work Phone number is invalid.\_ Please verify your information\
+                        \ and try again."
+                      - "Work Phone area code is invalid"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                cellPhone1:
+                  value:
+                    errors:
+                      cellPhone1:
+                      - "The Cell Phone 1 number is invalid.\_ Please verify your\
+                        \ information and try again."
+                      - "Cell Phone 1 area code is invalid"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                cellPhone2:
+                  value:
+                    errors:
+                      cellPhone2:
+                      - "The Cell Phone 2 number is invalid.\_ Please verify your\
+                        \ information and try again."
+                      - "Cell Phone 2 area code is invalid"
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                HomeCellError:
+                  value:
+                    errors:
+                      HomeCellError:
+                      - "The Home Phone number and Cell Phone 1 number are either\
+                        \ missing or invalid.\_ Either a Home Phone or a Cell Phone\
+                        \ 1 is required. Please verify your information and try again."
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                HomeWorkError:
+                  value:
+                    errors:
+                      HomeWorkError:
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                CellWorkError:
+                  value:
+                    errors:
+                      CellWorkError:
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                HomeOtherError:
+                  value:
+                    errors:
+                      HomeOtherError:
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                WorkOtherError:
+                  value:
+                    errors:
+                      WorkOtherError:
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                CellOtherError:
+                  value:
+                    errors:
+                      CellOtherError:
+                      - "Phone numbers cannot match."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                emailAddress:
+                  value:
+                    errors:
+                      emailAddress:
+                      - "The Email Address is either missing or invalid.\_ Please\
+                        \ verify your information and try again."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                ApplicantAddress:
+                  value:
+                    errors:
+                      ApplicantAddress:
+                      - "The address cannot be updated at this time."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+                CaDPhones:
+                  value:
+                    errors:
+                      CaDPhones:
+                      - "The phone number cannot be updated at this time."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Profile"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/RequestPin:
+    get:
+      tags:
+      - "RequestPin"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestPinResponse"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/RequestPin"
+                ChargedOffAcctException:
+                  value:
+                    errors:
+                      ChargedOffAcctException:
+                      - "C/O account not allowed."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/RequestPin"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Settings/{Platform}:
+    get:
+      tags:
+      - "Settings"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "Platform"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+        examples:
+          iOS:
+            value: "iOS"
+          android:
+            value: "android"
+          web:
+            value: "web"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MobileAppSettings"
+              example:
+                featureFlags:
+                  bankAcctNickname: false
+                  digitalProvisions: true
+                  docUpload: true
+                  isEMessengerDown: false
+                  knowledgeManagement: true
+                  submitInquiry: false
+                  analyticsLoggingEnabled: true
+                  sslPinning: true
+                  contextualManagement: true
+                  lockCardEnabled: true
+                versioning:
+                  deprecatedAppVersion: "2.0.1"
+                  deprecatedAppVersionMessage: "You are using an outdated version\
+                    \ of our Android app. Please update to be able to use our app."
+                  deprecatedOSVersion: "5"
+                  deprecatedOSVersionMessage: "You are using an outdated version of\
+                    \ Android. Please update to the latest version to continue using\
+                    \ our app."
+                  minimumAppVersion: "2.1"
+                  minimumAppVersionMessage: "You are using an older version of our\
+                    \ Android app. Some features may not function as expected. To\
+                    \ ensure all features function normally, please update the app."
+                  minimumOSVersion: "5"
+                  minimumOSVersionMessage: "You are using an older version of Android.\
+                    \ Some features may not function as expected. To ensure all features\
+                    \ function normally, please update your operating system."
+                pdfs:
+                  EStatementDisclosure: "https://devfrontend.premierbankcardonline.premier.local/images/pdfs/EStatementDisclosure.pdf"
+                docUpload:
+                  docUploadMaxFileSize: 10485760
+                  maxFilesPerUpload: 10
+                  dailyUploadLimit: 5
+                  uploadDocumentsUnavailableMessage: "Upload documents is currently\
+                    \ unavailable. Documents may be sent in via fax at this number\
+                    \ (605) 357-3438  or mailed to First PREMIER Bank, PO Box 5524,\
+                    \ Sioux Falls, SD 57117-5524."
+                  uploadDocumentsUnavailableMessageForApplications: "Upload documents\
+                    \ is currently unavailable. Documents may be sent in via fax at\
+                    \ this number (888) 604-9428  or mailed to First PREMIER Bank,\
+                    \ PO Box 5515, Sioux Falls, SD 57117-5515."
+                requestTooLargeMessage: "File size greater than what is acceptable."
+                appStoreUrl: "http://onelink.to/premiercard"
+  /api/v1/Statements:
+    get:
+      tags:
+      - "Statements"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "All Statements were Returned successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/StatementListResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Statements"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Statements/{statementId}:
+    get:
+      tags:
+      - "Statements"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "statementId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "All Statements were Returned successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatementResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Statements/{statementId}"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Test/isapirunning:
+    get:
+      tags:
+      - "Test"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "boolean"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Transactions/Recent:
+    get:
+      tags:
+      - "Transactions"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Recent Transactions were Returned successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TransactionDetailsResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Transactions/Recent"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+  /api/v1/Transactions/All:
+    get:
+      tags:
+      - "Transactions"
+      parameters:
+      - name: "Platform"
+        in: "header"
+        description: "Request Platform"
+        required: true
+        schema:
+          enum:
+          - "Android"
+          - "iOS"
+          - "Web"
+          type: "string"
+      - name: "accountHandle"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "All recent transactions were Returned successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TransactionDetailsResponse"
+        "400":
+          description: "Request was malformed or failed model validation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationProblemDetails"
+              examples:
+                AcctException:
+                  value:
+                    errors:
+                      AcctException:
+                      - "Account not found."
+                    title: "One or more validation errors occurred."
+                    status: 400
+                    instance: "api/v1/Transactions/All"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - oauth2:
+        - "MobileApiScope"
+components:
+  schemas:
+    AboutUsPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        buttonText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        showButton:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        buttonURL:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    AbstractCmsPage:
+      type: "object"
+      additionalProperties: false
+    AcceptTermsRequest:
+      required:
+      - "sessionId"
+      type: "object"
+      properties:
+        sessionId:
+          type: "string"
+          format: "uuid"
+        acceptedTerms:
+          type: "boolean"
+        ipAddress:
+          type: "string"
+          nullable: true
+          readOnly: true
+        otac:
+          type: "string"
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    AccountSummaryMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        acctsumM0001:
+          type: "string"
+          nullable: true
+        acctsumM0002:
+          type: "string"
+          nullable: true
+        hardBounceBodyText:
+          type: "string"
+          nullable: true
+        annualFeeWarningMessageText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        hardBounceTitle:
+          type: "string"
+          nullable: true
+        appHeaderText:
+          type: "string"
+          nullable: true
+        appFooterText:
+          type: "string"
+          nullable: true
+        appAmountText:
+          type: "string"
+          nullable: true
+        appButtonText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ActivityPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    AdditionalCardCmsResponse:
+      type: "object"
+      properties:
+        cmsMessage:
+          type: "string"
+          nullable: true
+          example: "Returns cms AdditionalCardMobilePage with feeVariable populated."
+      additionalProperties: false
+    AdditionalCardMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    AdditionalCardRequest:
+      type: "object"
+      properties:
+        firstName:
+          type: "string"
+          nullable: true
+          example: "John"
+        lastName:
+          type: "string"
+          nullable: true
+          example: "Doe"
+        dob:
+          type: "string"
+          format: "date-time"
+          example: "01/01/2000"
+      additionalProperties: false
+    AdditionalCardResponse:
+      type: "object"
+      properties:
+        confirmationMessage:
+          type: "string"
+          nullable: true
+          example: "Returns cms additional card confirmation message."
+        saveResult:
+          $ref: "#/components/schemas/CustomDataClasSaveResult"
+      additionalProperties: false
+    ApplicationStatusPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        pfFooterText:
+          type: "string"
+          nullable: true
+        sdFooterText:
+          type: "string"
+          nullable: true
+        pendingHeaderText:
+          type: "string"
+          nullable: true
+        approvedHeaderText:
+          type: "string"
+          nullable: true
+        openHeaderText:
+          type: "string"
+          nullable: true
+        openZeroBalanceHeaderText:
+          type: "string"
+          nullable: true
+        inactiveStateText:
+          type: "string"
+          nullable: true
+        instActvText:
+          type: "string"
+          nullable: true
+        deniedHeaderText:
+          type: "string"
+          nullable: true
+        withdrawnHeaderText:
+          type: "string"
+          nullable: true
+        restrictedActionText:
+          type: "string"
+          nullable: true
+        nonPfSdFooterText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    BankAccountCreate:
+      type: "object"
+      properties:
+        abaNumber:
+          type: "string"
+          nullable: true
+          example: "091408598"
+        accountNumber:
+          type: "string"
+          nullable: true
+          example: "1234561569"
+      additionalProperties: false
+    BankAccountCreateResponse:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        code:
+          type: "string"
+          nullable: true
+        message:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    BankAccountNameResponse:
+      type: "object"
+      properties:
+        bankName:
+          type: "string"
+          nullable: true
+          example: "FIRST PREMIER BANK"
+      additionalProperties: false
+    BankAccountResponse:
+      type: "object"
+      properties:
+        abaNumber:
+          type: "string"
+          nullable: true
+          example: "091408598"
+        accountType:
+          type: "string"
+          nullable: true
+          example: "Checking"
+        bankName:
+          type: "string"
+          nullable: true
+          example: "FIRST PREMIER BANK"
+        maskedAccountNumber:
+          type: "string"
+          nullable: true
+          example: "*****1569"
+        bankAccountId:
+          type: "integer"
+          format: "int32"
+          example: 943434
+        onlineUserId:
+          type: "integer"
+          format: "int32"
+          example: 1
+      additionalProperties: false
+    BankAccountResponseUnMasked:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/BankAccountResponse"
+      properties:
+        accountNumber:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    BrowserVersions:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        dateAdded:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        active:
+          type: "boolean"
+        browserName:
+          type: "string"
+          nullable: true
+        browserFamily:
+          type: "string"
+          nullable: true
+        majorVersionNumber:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    Category:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        categoryId:
+          type: "integer"
+          format: "int32"
+        displayOrder:
+          type: "integer"
+          format: "int32"
+        active:
+          type: "boolean"
+        showIntermediateWarning:
+          type: "boolean"
+        headlineText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ChangePasswordMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        changePasswordConfirmationText:
+          type: "string"
+          nullable: true
+        forcedResetMessageText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ChangePasswordParameters:
+      type: "object"
+      properties:
+        currentPassword:
+          type: "string"
+          nullable: true
+          example: "Password1234"
+        desiredPassword:
+          type: "string"
+          nullable: true
+          example: "Password1234"
+      additionalProperties: false
+    CommunicationSettingsPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        disclosurePageBodyText:
+          type: "string"
+          nullable: true
+        disclosurePageFooterText:
+          type: "string"
+          nullable: true
+        verifyCodePageBodyText:
+          type: "string"
+          nullable: true
+        verifyCodePageFooterText:
+          type: "string"
+          nullable: true
+        confirmationPageBodyText:
+          type: "string"
+          nullable: true
+        confirmationPageFooterText:
+          type: "string"
+          nullable: true
+        notEnrolledCycleDateMessage:
+          type: "string"
+          nullable: true
+        enrolledCycleDateMessage:
+          type: "string"
+          nullable: true
+        disclosureId:
+          type: "integer"
+          format: "int32"
+        chargedOffDisclosureId:
+          type: "integer"
+          format: "int32"
+        getPDFmediaId:
+          type: "integer"
+          format: "int32"
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        enrollAllAccountsCheckboxText:
+          type: "string"
+          nullable: true
+        disclosurePageTitle:
+          type: "string"
+          nullable: true
+        verifyCodePageTitle:
+          type: "string"
+          nullable: true
+        confirmationPageTitle:
+          type: "string"
+          nullable: true
+        getPdfReaderText:
+          type: "string"
+          nullable: true
+        getPdfReaderURL:
+          type: "string"
+          nullable: true
+        chargedOffBodyText:
+          type: "string"
+          nullable: true
+        chargedOffFooterText:
+          type: "string"
+          nullable: true
+        chargedOffVerifyCodePageBodyText:
+          type: "string"
+          nullable: true
+        chargedOffVerifyCodePageFooterText:
+          type: "string"
+          nullable: true
+        chargedOffConfirmationPageBodyText:
+          type: "string"
+          nullable: true
+        chargedOffConfirmationPageFooterText:
+          type: "string"
+          nullable: true
+        pdfReaderImage:
+          $ref: "#/components/schemas/Media"
+      additionalProperties: false
+    CommunicationSettingsPageViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        communicationSettingsPageConfiguration:
+          $ref: "#/components/schemas/CommunicationSettingsPageConfiguration"
+        disclosureText:
+          type: "string"
+          nullable: true
+        chargedOffDisclosureText:
+          type: "string"
+          nullable: true
+        corpLiteDisclosureText:
+          type: "string"
+          nullable: true
+        technicalRequirementsPageViewModel:
+          $ref: "#/components/schemas/TechnicalRequirementsPageViewModel"
+      additionalProperties: false
+    ConsumerAlertPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        consumerAlertBodyText:
+          type: "string"
+          nullable: true
+        consumerAlertFooterText:
+          type: "string"
+          nullable: true
+        leftColumnId:
+          type: "integer"
+          format: "int32"
+        middleColumnId:
+          type: "integer"
+          format: "int32"
+        rightColumnId:
+          type: "integer"
+          format: "int32"
+        consumerAlertTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContactUsViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        largeImageBox:
+          $ref: "#/components/schemas/LargeImageBox"
+        standAloneImageBox:
+          $ref: "#/components/schemas/ImageBox"
+        leftImageBox:
+          $ref: "#/components/schemas/ImageBox"
+        centerImageBox:
+          $ref: "#/components/schemas/ImageBox"
+        rightImageBox:
+          $ref: "#/components/schemas/ImageBox"
+        chargedOffLargeImageBox:
+          $ref: "#/components/schemas/LargeImageBox"
+        chargedOffStandAloneImageBox:
+          $ref: "#/components/schemas/ImageBox"
+      additionalProperties: false
+    ContentLibrary:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        contentData:
+          type: "string"
+          format: "byte"
+          nullable: true
+        displayOrder:
+          type: "integer"
+          format: "int32"
+        chargedOffDisplayOrder:
+          type: "integer"
+          format: "int32"
+        showInFormsAndMaterials:
+          type: "boolean"
+        showInChargedOffFormsAndMaterials:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        fileName:
+          type: "string"
+          nullable: true
+        contentType:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualAlertsDestinationRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        phoneNumber:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualAlertsDisableRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        cardMask:
+          type: "string"
+          nullable: true
+        alerts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ContextualAlertsDisableRequestDetails"
+          nullable: true
+      additionalProperties: false
+    ContextualAlertsDisableRequestDetails:
+      type: "object"
+      properties:
+        alertCode:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualAlertsEnableRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        cardMask:
+          type: "string"
+          nullable: true
+        alerts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ContextualAlertsEnableRequestDetails"
+          nullable: true
+      additionalProperties: false
+    ContextualAlertsEnableRequestDetails:
+      type: "object"
+      properties:
+        alertCode:
+          type: "string"
+          nullable: true
+        threshold:
+          type: "integer"
+          format: "int32"
+      additionalProperties: false
+    ContextualAlertsMeta:
+      type: "object"
+      properties:
+        alertCode:
+          type: "string"
+          nullable: true
+        alertName:
+          type: "string"
+          nullable: true
+        alertDescription:
+          type: "string"
+          nullable: true
+        displayOrderNum:
+          type: "integer"
+          format: "int32"
+        isMandatory:
+          type: "boolean"
+        threshold:
+          type: "number"
+          format: "float"
+          nullable: true
+        alertCategory:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualControlsLockRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        cardMask:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualControlsStatus:
+      type: "object"
+      properties:
+        isLocked:
+          type: "boolean"
+      additionalProperties: false
+    ContextualControlsStatusRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        cardMask:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualControlsUnlockRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+        cardMask:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ContextualSubscriptionDetails:
+      type: "object"
+      properties:
+        alertCode:
+          type: "string"
+          nullable: true
+        alertName:
+          type: "string"
+          nullable: true
+        alertDescription:
+          type: "string"
+          nullable: true
+        threshold:
+          type: "integer"
+          format: "int32"
+      additionalProperties: false
+    ContextualSubscriptions:
+      type: "object"
+      properties:
+        cardMask:
+          type: "string"
+          nullable: true
+        phoneNumber:
+          type: "string"
+          nullable: true
+        alertSubscriptions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ContextualSubscriptionDetails"
+          nullable: true
+      additionalProperties: false
+    CreditCardAgreements:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          nullable: true
+          example: "FR012345678_Agreement_6.pdf"
+        url:
+          type: "string"
+          nullable: true
+          example: "https://subdomain.domain.com/images/offers/FR012345678_Agreement_6.pdf"
+      additionalProperties: false
+    CreditLineIncreaseMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        confirmationText:
+          type: "string"
+          nullable: true
+        clI_GRANT:
+          type: "string"
+          nullable: true
+        clI_DENIED:
+          type: "string"
+          nullable: true
+        clI_EMPCORP:
+          type: "string"
+          nullable: true
+        clI_ELMNID0000:
+          type: "string"
+          nullable: true
+        clI_PRIME:
+          type: "string"
+          nullable: true
+        clI_DENYLAST48:
+          type: "string"
+          nullable: true
+        clI_GRANTLAST48:
+          type: "string"
+          nullable: true
+        clI_LAST48:
+          type: "string"
+          nullable: true
+        clI_MULTRAN:
+          type: "string"
+          nullable: true
+        clI_RSTATEMENT:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    CreditLineIncreaseResponse:
+      type: "object"
+      properties:
+        resultCode:
+          type: "string"
+          nullable: true
+          example: "CLI_GRANT"
+        resultMessage:
+          type: "string"
+          nullable: true
+        amountIncreased:
+          type: "number"
+          format: "double"
+          example: 150
+        fee:
+          type: "number"
+          format: "double"
+          example: 37.5
+      additionalProperties: false
+    CurrentCreditCardAgreementsPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    CustomDataClasSaveResult:
+      type: "object"
+      properties:
+        newId:
+          type: "integer"
+          format: "int32"
+          example: 0
+        errors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CustomValidationFailure"
+          nullable: true
+      additionalProperties: false
+    CustomValidationFailure:
+      type: "object"
+      properties:
+        errorMessage:
+          type: "string"
+          nullable: true
+        errorField:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    DeliveryMethod:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      type: "integer"
+      format: "int32"
+    Disclosure:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        disclosureData:
+          type: "string"
+          format: "byte"
+          nullable: true
+        bodyText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        fileName:
+          type: "string"
+          nullable: true
+        contentType:
+          type: "string"
+          nullable: true
+        disclosureType:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    DisclosuresPageViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        termsAndConditionsDisclosure:
+          $ref: "#/components/schemas/Disclosure"
+        privacyDisclosure:
+          $ref: "#/components/schemas/Disclosure"
+        privacyNotice:
+          $ref: "#/components/schemas/Disclosure"
+        accessibilityStatement:
+          $ref: "#/components/schemas/Disclosure"
+        alertsTermsAndConditionsDisclosure:
+          $ref: "#/components/schemas/Disclosure"
+      additionalProperties: false
+    DisputeTransactionMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    DocumentContents:
+      type: "object"
+      properties:
+        pdfDocument:
+          type: "string"
+          format: "byte"
+          nullable: true
+          example: ""
+      additionalProperties: false
+    DocumentReasons:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+          example: 12
+        title:
+          type: "string"
+          nullable: true
+          example: "Power of Attorney"
+      additionalProperties: false
+    DocUploadSettings:
+      type: "object"
+      properties:
+        docUploadMaxFileSize:
+          type: "integer"
+          format: "int32"
+        maxFilesPerUpload:
+          type: "integer"
+          format: "int32"
+        dailyUploadLimit:
+          type: "integer"
+          format: "int32"
+        uploadDocumentsUnavailableMessage:
+          type: "string"
+          nullable: true
+        uploadDocumentsUnavailableMessageForApplications:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ElectronicDeliveryPreference:
+      type: "object"
+      properties:
+        enrollmentStatus:
+          type: "string"
+          nullable: true
+          example: "Enrolled"
+        changesAllowed:
+          type: "boolean"
+      additionalProperties: false
+    ElectronicDeliveryPreferences:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+          example: "12345678"
+        downForMaintenance:
+          type: "boolean"
+        eStatementsMaintenanceMessage:
+          type: "string"
+          nullable: true
+          example: "Viewing statements is currently unavailable while we undergo site\
+            \ maintenance, which may take up to 7 hours. Please try again later."
+        deliveryPreferencesMaintenanceMessage:
+          type: "string"
+          nullable: true
+          example: "Updating delivery preferences is currently unavailable while we\
+            \ undergo site maintenance, which may take up to 7 hours. Please try again\
+            \ later."
+        showCycleDateMessage:
+          type: "boolean"
+        emailAddress:
+          type: "string"
+          nullable: true
+          example: "SomeEmail@Domain.com"
+        eStatementsEnrollment:
+          $ref: "#/components/schemas/ElectronicDeliveryPreference"
+        eLettersEnrollment:
+          $ref: "#/components/schemas/ElectronicDeliveryPreference"
+      additionalProperties: false
+    EnrollmentAcceptTerms:
+      type: "object"
+      properties:
+        otac:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    EnrollmentMFA:
+      type: "object"
+      properties:
+        cellPhoneNumber:
+          type: "string"
+          nullable: true
+          example: "5555555555"
+        homePhoneNumber:
+          type: "string"
+          nullable: true
+          example: "5555555555"
+        workPhoneNumber:
+          type: "string"
+          nullable: true
+          example: "5555555555"
+        otherPhoneNumber:
+          type: "string"
+          nullable: true
+          example: "5555555555"
+        emailAddress:
+          type: "string"
+          nullable: true
+          example: "Email.Example@website.com"
+      additionalProperties: false
+    EnrollmentPageConfiguration:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        step1Text:
+          type: "string"
+          nullable: true
+        emailDisclaimer:
+          type: "string"
+          nullable: true
+        agreeDisclaimer:
+          type: "string"
+          nullable: true
+        footnote:
+          type: "string"
+          nullable: true
+        step3Text:
+          type: "string"
+          nullable: true
+        step4UpperText:
+          type: "string"
+          nullable: true
+        step4LowerText:
+          type: "string"
+          nullable: true
+        enrollmentConfirmationText:
+          type: "string"
+          nullable: true
+        oStatusMessage:
+          type: "string"
+          nullable: true
+        message571:
+          type: "string"
+          nullable: true
+        alreadyEnrolledMessage:
+          type: "string"
+          nullable: true
+        mobileAlreadyEnrolledMessage:
+          type: "string"
+          nullable: true
+        deniedHeaderText:
+          type: "string"
+          nullable: true
+        withdrawnHeaderText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    EnrollmentPageViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        enrollmentPageConfiguration:
+          $ref: "#/components/schemas/EnrollmentPageConfiguration"
+        terms:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    EnrollmentProcessCode:
+      type: "object"
+      properties:
+        sessionId:
+          type: "string"
+          nullable: true
+          example: "21bb986f-0399-4195-919b-abe9d7bab6dc"
+        mfaCode:
+          type: "string"
+          nullable: true
+          example: "1234"
+      additionalProperties: false
+    EnrollmentProfile:
+      required:
+      - "email"
+      - "password"
+      - "sessionId"
+      - "username"
+      type: "object"
+      properties:
+        username:
+          maxLength: 32
+          minLength: 8
+          pattern: "^(?!.*\\d{9}|(?:.*\\d){32})[\\w\\d_\\.]{8,32}$"
+          type: "string"
+        password:
+          maxLength: 64
+          minLength: 8
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        sessionId:
+          type: "string"
+          format: "uuid"
+      additionalProperties: false
+    EnrollmentRequestCode:
+      type: "object"
+      properties:
+        sessionId:
+          type: "string"
+          nullable: true
+          example: "21bb986f-0399-4195-919b-abe9d7bab6dc"
+        deliveryMethod:
+          $ref: "#/components/schemas/DeliveryMethod"
+      additionalProperties: false
+    EnrollmentVerificationNumbers:
+      required:
+      - "sessionId"
+      - "ssn"
+      - "verificationNumber"
+      type: "object"
+      properties:
+        ssn:
+          pattern: "^(?!(000|666|9))(?:\\d{3}|[AB]\\d{2})-?(?!00)\\d{2}-?(?!0000)\\\
+            d{4}$"
+          type: "string"
+        verificationNumber:
+          maxLength: 16
+          minLength: 0
+          type: "string"
+        sessionId:
+          type: "string"
+          format: "uuid"
+        ipAddress:
+          type: "string"
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    Faq:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        question:
+          type: "string"
+          nullable: true
+        answer:
+          type: "string"
+          nullable: true
+        displayOrder:
+          type: "integer"
+          format: "int32"
+        active:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    FaqPageConfiguration:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    FaqPageViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        faqs:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Faq"
+          nullable: true
+        faqPageConfiguration:
+          $ref: "#/components/schemas/FaqPageConfiguration"
+      additionalProperties: false
+    FinancialTip:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        displayOrder:
+          type: "integer"
+          format: "int32"
+        active:
+          type: "boolean"
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        title:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    GlobalCollateralFormsAndMaterialsConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        contentLibraryData:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ContentLibrary"
+          nullable: true
+      additionalProperties: false
+    GlobalCollateralMultipleAccountPopupConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        multipleAccountPopUps:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/MultipleAccountPopUp"
+          nullable: true
+      additionalProperties: false
+    GlobalImageDataConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        imageData:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Media"
+          nullable: true
+      additionalProperties: false
+    HelpPageConfiguration:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        experianLabel:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        showExperianButton:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        experianButtonText:
+          type: "string"
+          nullable: true
+        experianURL:
+          type: "string"
+          nullable: true
+        financialTipsTitle:
+          type: "string"
+          nullable: true
+        formsAndMaterialsTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    HelpPageViewModel:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        helpPageConfiguration:
+          $ref: "#/components/schemas/HelpPageConfiguration"
+        categories:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Category"
+          nullable: true
+        helpTopics:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/HelpTopic"
+          nullable: true
+        financialTips:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FinancialTip"
+          nullable: true
+        formsMaterials:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ContentLibrary"
+          nullable: true
+      additionalProperties: false
+    HelpTopic:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        answer:
+          type: "string"
+          nullable: true
+        categoryId:
+          type: "integer"
+          format: "int32"
+        displayOrder:
+          type: "integer"
+          format: "int32"
+        active:
+          type: "boolean"
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        question:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    IDIRequest:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          nullable: true
+          example: "0f8fad5b-d9cb-469f-a165-70867728950e"
+        passthruFromApp:
+          type: "string"
+          nullable: true
+          example: "eyJ3YWxsZXRUeXBlIjoiR29vZ2xlX1BheSIsImZvcldhbGxldFNkayI6ImV5SnZjR01pT2lKbGVVcG9Za2RqYVU5cFNrSk5hbFV5VWpCT1RsTXhZMmxNUTBwd1pHbEpOa2x0U2xSYU1VSnZXbFJWTW1KVWJFbGlSVkYwVXpKdmFVeERTakJaVjJOcFQybEtSRlpGUm01bGEyUnZWa2haZEZGdVpHeE9WRVpEVWxWME0xRlhXbEpKYVhkcFlUSnNhMGxxYjJsTk1YQlRVbFY0VGxKcmFFWlVWWGhUVkZSWk1VOUVZekJPUkVsNFRURk9iVkpZUm05VU1rcHlWMnRrVDJOdFZuZGpla3BIVG01c1RrMXVTakJoYlRGWldYbEpjMGx0VG05WlZ6VjFXbGQ0VkZwWFRqRmpiV3d3WlZWT2RtSnVVbXhsU0ZGcFQybEtWRk5GUmxOU1ZWSm1WVEJXUkZWclZsVkphWGRwV2xjMWFrbHFiMmxSVkVreFRtdGtSRlJUU1hOSmJXeG9aRU5KTmtscVJURk9WRkY2VDBSck5VOVVVV2xNUTBvd1pWaEJhVTlwU2t0VU1VNUdTVzR3TGpRNE9ERTVja2g1WDFWaGRqaDZlbFZYTWtGNlZqVjRURkJpZDNKVVpraDNUSFpPV0VGbVNqSmxkRkV1WWxOblVHaGxOVFp0T1Voc1JDMUxheTVDZUdwclRHWTJUMFZ3T0VkcGMyVnZVREZZUVVGMlZXVlpaekpGZVRWcmNGbHdRME5XUzFCRGNtcElNbkE0Y1RGVFYyTmlSMHB3TVRWa2VFRnBlbWxPVDFoSWQyTmxaMkUyYzJodVdFWmthbUUxWlZJM1JVSldXWEF6TFdWcU5VVlNRV0k0T0VocGVGaENUWE5HTjA1TVQyOU5Sa1ptTjJWMWJqRkhXRXRIZDFsS1ZGaEJSSGRQVkRBeVdsSjRaMVZIUTA1Nk56QkxhbTVXVTA1WVNGZE9PRWMyYzNReFUzUnZVWGt4Y1RZd1dEZ3RUMkpuU21wdWQxQnBhM1JoVDJGbmNHNWpSR3haY0hkM1dWTmlabWxwZURSbmNYTllSVlpwUW5wWU5rSnNNSGRuWm1GQ1QyaGFjVzVMTVdsWU4zQm1SMXBsTVZoUFQycG1aVEZIYjNka2JsSkVVekpLUWxoTlRrWndiWEZGUW5OdGJUaHFjbGhVYkhFeFR6aGxNRWhZYzJoS1ZuZE5YemxLVkZWbE1YTk5XR2g2YTBoaFZIaHllVkE0VVZvMk5IYzVWV1JUWms1d2QyNU1RMkZ4TTNoc1NYWmZiM2N5VUV0eFlWVkhlblExV0hKVmNrTjZSR1JUZVhJeE1UVkRhSGx5UjFwU05tbFdhMFpUVjBaWVEwZHFObTU1TWpSVE5saHlTREJ2TjJGd1dXbHRZazlwWmtsRmVGTjVXRzF2V0RsdlFsUkJWa3QwZVZZMExUSnlhbGhDZUVWU1RYbGhibWxUUjFRMlpVSkRhbmx1U2t4RVVYZEVPRm8zZEV0V2RqRXhORmMzWkRCVk5ISkVVRUZaUVhSRFRVNWZPRTFIWmxZeFJVMUhkWEJDTkRCbE9IcHNlV3RRZDBsMGMzbzFXV05oUm1jdGFFbHBUbEowTjJOM1NtRTBVVnBRTUhKaWFHdERNMjVQY1hsTFdVNWxTSE5wVlM1dVdXRlJTeTFuWTNOdU0zWXRMVzVhTWpCTGVscFJJaXdpWTJGeVpFNWxkSGR2Y21zaU9pSldTVk5CSWl3aWRHOXJaVzVRY205MmFXUmxjaUk2SWxaVVV5SXNJbVJwYzNCc1lYbE9ZVzFsSWpvaVZHaGxJRkp2WTJzaUxDSnNZWE4wUkdsbmFYUnpJam9pT0Rrek15SXNJblZ6WlhKQlpHUnlaWE56SWpwN0lteHBibVV4SWpvaU5qZzFOU0lzSW14cGJtVXlJam9pVUdGamFXWnBZeUJUZEhKbFpYUWlMQ0pqYVhSNUlqb2lUMDFCU0VFaUxDSnpkR0YwWlNJNklrNUZJaXdpWTI5MWJuUnllU0k2SWxWVElpd2ljRzl6ZEdGc1EyOWtaU0k2SWpZNE1UQTJNVEExTWlKOUxDSmpZWEprYUc5c1pHVnlUbUZ0WlNJNklrUjNZWGx1WlNCS2IyaHVjMjl1SWl3aWNHaHZibVZPZFcxaVpYSWlPaUk1TlRRek9ETXpOak00SW4wPSJ9"
+      additionalProperties: false
+    IDIReturn:
+      type: "object"
+      properties:
+        passthruToIdiSdk:
+          type: "string"
+          nullable: true
+          example: "eyJ3YWxsZXRUeXBlIjoiR29vZ2xlX1BheSIsImZvcldhbGxldFNkayI6ImV5SnZjR01pT2lKbGVVcG9Za2RqYVU5cFNrSk5hbFV5VWpCT1RsTXhZMmxNUTBwd1pHbEpOa2x0U2xSYU1VSnZXbFJWTW1KVWJFbGlSVkYwVXpKdmFVeERTakJaVjJOcFQybEtSRlpGUm01bGEyUnZWa2haZEZGdVpHeE9WRVpEVWxWME0xRlhXbEpKYVhkcFlUSnNhMGxxYjJsTk1YQlRVbFY0VGxKcmFFWlVWWGhUVkZSWk1VOUVZekJPUkVsNFRURk9iVkpZUm05VU1rcHlWMnRrVDJOdFZuZGpla3BIVG01c1RrMXVTakJoYlRGWldYbEpjMGx0VG05WlZ6VjFXbGQ0VkZwWFRqRmpiV3d3WlZWT2RtSnVVbXhsU0ZGcFQybEtWRk5GUmxOU1ZWSm1WVEJXUkZWclZsVkphWGRwV2xjMWFrbHFiMmxSVkVreFRtdGtSRlJUU1hOSmJXeG9aRU5KTmtscVJURk9WRkY2VDBSck5VOVVVV2xNUTBvd1pWaEJhVTlwU2t0VU1VNUdTVzR3TGpRNE9ERTVja2g1WDFWaGRqaDZlbFZYTWtGNlZqVjRURkJpZDNKVVpraDNUSFpPV0VGbVNqSmxkRkV1WWxOblVHaGxOVFp0T1Voc1JDMUxheTVDZUdwclRHWTJUMFZ3T0VkcGMyVnZVREZZUVVGMlZXVlpaekpGZVRWcmNGbHdRME5XUzFCRGNtcElNbkE0Y1RGVFYyTmlSMHB3TVRWa2VFRnBlbWxPVDFoSWQyTmxaMkUyYzJodVdFWmthbUUxWlZJM1JVSldXWEF6TFdWcU5VVlNRV0k0T0VocGVGaENUWE5HTjA1TVQyOU5Sa1ptTjJWMWJqRkhXRXRIZDFsS1ZGaEJSSGRQVkRBeVdsSjRaMVZIUTA1Nk56QkxhbTVXVTA1WVNGZE9PRWMyYzNReFUzUnZVWGt4Y1RZd1dEZ3RUMkpuU21wdWQxQnBhM1JoVDJGbmNHNWpSR3haY0hkM1dWTmlabWxwZURSbmNYTllSVlpwUW5wWU5rSnNNSGRuWm1GQ1QyaGFjVzVMTVdsWU4zQm1SMXBsTVZoUFQycG1aVEZIYjNka2JsSkVVekpLUWxoTlRrWndiWEZGUW5OdGJUaHFjbGhVYkhFeFR6aGxNRWhZYzJoS1ZuZE5YemxLVkZWbE1YTk5XR2g2YTBoaFZIaHllVkE0VVZvMk5IYzVWV1JUWms1d2QyNU1RMkZ4TTNoc1NYWmZiM2N5VUV0eFlWVkhlblExV0hKVmNrTjZSR1JUZVhJeE1UVkRhSGx5UjFwU05tbFdhMFpUVjBaWVEwZHFObTU1TWpSVE5saHlTREJ2TjJGd1dXbHRZazlwWmtsRmVGTjVXRzF2V0RsdlFsUkJWa3QwZVZZMExUSnlhbGhDZUVWU1RYbGhibWxUUjFRMlpVSkRhbmx1U2t4RVVYZEVPRm8zZEV0V2RqRXhORmMzWkRCVk5ISkVVRUZaUVhSRFRVNWZPRTFIWmxZeFJVMUhkWEJDTkRCbE9IcHNlV3RRZDBsMGMzbzFXV05oUm1jdGFFbHBUbEowTjJOM1NtRTBVVnBRTUhKaWFHdERNMjVQY1hsTFdVNWxTSE5wVlM1dVdXRlJTeTFuWTNOdU0zWXRMVzVhTWpCTGVscFJJaXdpWTJGeVpFNWxkSGR2Y21zaU9pSldTVk5CSWl3aWRHOXJaVzVRY205MmFXUmxjaUk2SWxaVVV5SXNJbVJwYzNCc1lYbE9ZVzFsSWpvaVZHaGxJRkp2WTJzaUxDSnNZWE4wUkdsbmFYUnpJam9pT0Rrek15SXNJblZ6WlhKQlpHUnlaWE56SWpwN0lteHBibVV4SWpvaU5qZzFOU0lzSW14cGJtVXlJam9pVUdGamFXWnBZeUJUZEhKbFpYUWlMQ0pqYVhSNUlqb2lUMDFCU0VFaUxDSnpkR0YwWlNJNklrNUZJaXdpWTI5MWJuUnllU0k2SWxWVElpd2ljRzl6ZEdGc1EyOWtaU0k2SWpZNE1UQTJNVEExTWlKOUxDSmpZWEprYUc5c1pHVnlUbUZ0WlNJNklrUjNZWGx1WlNCS2IyaHVjMjl1SWl3aWNHaHZibVZPZFcxaVpYSWlPaUk1TlRRek9ETXpOak00SW4wPSJ9"
+      additionalProperties: false
+    ImageBox:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        mediaId:
+          type: "integer"
+          format: "int32"
+        showIntermediateWarning:
+          type: "boolean"
+        headlineText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        image:
+          $ref: "#/components/schemas/Media"
+      additionalProperties: false
+    InquiryMainPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        addInquiryBodyText:
+          type: "string"
+          nullable: true
+        addInquiryFooterText:
+          type: "string"
+          nullable: true
+        addInquiryAdditionalCardMessage:
+          type: "string"
+          nullable: true
+        mobileAdditionalCardMessage:
+          type: "string"
+          nullable: true
+        submitInquiryBodyText:
+          type: "string"
+          nullable: true
+        submitInquiryFooterText:
+          type: "string"
+          nullable: true
+        viewInquiryBodyText:
+          type: "string"
+          nullable: true
+        viewInquiryFooterText:
+          type: "string"
+          nullable: true
+        inqurY0001:
+          type: "string"
+          nullable: true
+        addInquiryShowIntermediateWarning:
+          type: "boolean"
+        submitInquiryShowIntermediateWarning:
+          type: "boolean"
+        viewInquiryShowIntermediateWarning:
+          type: "boolean"
+        addInquiryPageTitle:
+          type: "string"
+          nullable: true
+        submitInquiryPageTitle:
+          type: "string"
+          nullable: true
+        viewInquiryPageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    IntermediateWarning:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+          example: 5321
+        bodyText:
+          type: "string"
+          nullable: true
+          example: "This is a default message from the Base View and needs to be replaced\
+            \ with data from the CMS."
+        name:
+          type: "string"
+          nullable: true
+          example: "WarningName"
+      additionalProperties: false
+    KnowledgeManagement:
+      type: "object"
+      properties:
+        searchResults:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/searchResults"
+          nullable: true
+      additionalProperties: false
+    LargeImageBox:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        mediaId:
+          type: "integer"
+          format: "int32"
+        showIntermediateWarning:
+          type: "boolean"
+        headlineText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        image:
+          $ref: "#/components/schemas/Media"
+      additionalProperties: false
+    LettersMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        deleteLettersConfirmationText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        communicationSettingsLinkText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    LinkYourAccountsPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    Media:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        imageData:
+          type: "string"
+          format: "byte"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        fileName:
+          type: "string"
+          nullable: true
+        contentType:
+          type: "string"
+          nullable: true
+        mediaType:
+          type: "string"
+          nullable: true
+        altText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    mfaOptionsRequest:
+      type: "object"
+      properties:
+        sessionId:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    MobileAppSettings:
+      type: "object"
+      properties:
+        featureFlags:
+          type: "object"
+          additionalProperties:
+            type: "boolean"
+          nullable: true
+        versioning:
+          type: "object"
+          additionalProperties: {}
+          nullable: true
+        pdfs:
+          type: "object"
+          additionalProperties:
+            type: "string"
+          nullable: true
+        docUpload:
+          $ref: "#/components/schemas/DocUploadSettings"
+        requestTooLargeMessage:
+          type: "string"
+          nullable: true
+        appStoreUrl:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+      description: "Model class for settings, messages, and feature flags that should\
+        \ be loaded during startup for the mobile apps"
+    MultipleAccountPopUp:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        url:
+          type: "string"
+          nullable: true
+        mobileURL:
+          type: "string"
+          nullable: true
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        daysToWait:
+          type: "integer"
+          format: "int32"
+        numberPlayedThreshold:
+          type: "integer"
+          format: "int32"
+        mediaId:
+          type: "integer"
+          format: "int32"
+        mobileMediaId:
+          type: "integer"
+          format: "int32"
+        startDisplayDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        endDisplayDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        isCriteriaRequired:
+          type: "boolean"
+        urlText:
+          type: "string"
+          nullable: true
+        displayTo:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    MultipleAccountPopUpMobile:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        pageName:
+          type: "string"
+          nullable: true
+        urlText:
+          type: "string"
+          nullable: true
+        bodyText:
+          type: "string"
+          nullable: true
+        yesButtonText:
+          type: "string"
+          nullable: true
+        noButtonText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    MultipleAccountResponse:
+      type: "object"
+      properties:
+        multipleAccountPopupId:
+          type: "integer"
+          format: "int32"
+          example: 1000
+        pageName:
+          type: "string"
+          nullable: true
+          example: "Congratulations!"
+        url:
+          type: "string"
+          nullable: true
+          example: "WebsitUrl.com"
+        urlText:
+          type: "string"
+          nullable: true
+          example: "WebsitUrl.com Text"
+        bodyText:
+          type: "string"
+          nullable: true
+          example: "Congratulations! Due to your payment history with First PREMIER\
+            \ Bank, you may qualify for an additional credit card account."
+        yesButtonText:
+          type: "string"
+          nullable: true
+          example: "Yes"
+        noButtonText:
+          type: "string"
+          nullable: true
+          example: "No"
+      additionalProperties: false
+    PaymentCreate:
+      type: "object"
+      properties:
+        bankAccountId:
+          type: "integer"
+          format: "int32"
+          example: 654897
+        paymentDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        paymentAmount:
+          type: "number"
+          format: "double"
+          example: 250.02
+      additionalProperties: false
+    PaymentMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        paymentIndexBodyText:
+          type: "string"
+          nullable: true
+        paymentIndexFooterText:
+          type: "string"
+          nullable: true
+        createPaymentBodyText:
+          type: "string"
+          nullable: true
+        confirmPaymentBodyText:
+          type: "string"
+          nullable: true
+        createPaymentAccountBodyText:
+          type: "string"
+          nullable: true
+        confirmPaymentAccountBodyText:
+          type: "string"
+          nullable: true
+        paymentConfirmationMessageText:
+          type: "string"
+          nullable: true
+        fraudFoundMessage:
+          type: "string"
+          nullable: true
+        moneyOrderFoundMessage:
+          type: "string"
+          nullable: true
+        chargedOffBodyText:
+          type: "string"
+          nullable: true
+        chargedOffFooterText:
+          type: "string"
+          nullable: true
+        confirmPaymentCancelBodyText:
+          type: "string"
+          nullable: true
+        confirmPaymentCancelFooterText:
+          type: "string"
+          nullable: true
+        confirmAccountRemovalBodyText:
+          type: "string"
+          nullable: true
+        confirmAccountRemovalFooterText:
+          type: "string"
+          nullable: true
+        paymentConfirmationBodyText:
+          type: "string"
+          nullable: true
+        paymentConfirmationFooterText:
+          type: "string"
+          nullable: true
+        editAccountBodyText:
+          type: "string"
+          nullable: true
+        editAccountFooterText:
+          type: "string"
+          nullable: true
+        manageAccountBodyText:
+          type: "string"
+          nullable: true
+        manageAccountFooterText:
+          type: "string"
+          nullable: true
+        cannotDeletePaymentBodyText:
+          type: "string"
+          nullable: true
+        cannotDeletePaymentFooterText:
+          type: "string"
+          nullable: true
+        createPaymentFooter:
+          type: "string"
+          nullable: true
+        confirmPaymentFooter:
+          type: "string"
+          nullable: true
+        cancelPaymentFooter:
+          type: "string"
+          nullable: true
+        createAccountFooter:
+          type: "string"
+          nullable: true
+        confirmAccountFooter:
+          type: "string"
+          nullable: true
+        cancelAccountFooter:
+          type: "string"
+          nullable: true
+        removePaymentBodyText:
+          type: "string"
+          nullable: true
+        removePaymentAccountText:
+          type: "string"
+          nullable: true
+        paymentHistoryBodyText:
+          type: "string"
+          nullable: true
+        paymentHistoryFooterText:
+          type: "string"
+          nullable: true
+        historyCurrentPaymentBodyText:
+          type: "string"
+          nullable: true
+        historyProcessedPaymentBodyText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        paymentIndexPageTitle:
+          type: "string"
+          nullable: true
+        createPaymentPageTitle:
+          type: "string"
+          nullable: true
+        confirmPaymentPageTitle:
+          type: "string"
+          nullable: true
+        createPaymentAccountTitle:
+          type: "string"
+          nullable: true
+        confirmPaymentAccountTitle:
+          type: "string"
+          nullable: true
+        removePaymentPageTitle:
+          type: "string"
+          nullable: true
+        cannotDeletePaymentTitle:
+          type: "string"
+          nullable: true
+        confirmPaymentCancelTitle:
+          type: "string"
+          nullable: true
+        confirmAccountRemovalTitle:
+          type: "string"
+          nullable: true
+        paymentConfirmationTitle:
+          type: "string"
+          nullable: true
+        removePaymentAccountPageTitle:
+          type: "string"
+          nullable: true
+        paymentHistoryTitle:
+          type: "string"
+          nullable: true
+        historyCurrentPaymentTitle:
+          type: "string"
+          nullable: true
+        historyProcessedPaymentTitle:
+          type: "string"
+          nullable: true
+        editAccountTitle:
+          type: "string"
+          nullable: true
+        manageAccountTitle:
+          type: "string"
+          nullable: true
+        postingTimesBodyText:
+          type: "string"
+          nullable: true
+        displayPostingTimesLink:
+          type: "boolean"
+        mobileConfirmPaymentText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    PaymentResponse:
+      type: "object"
+      properties:
+        paymentID:
+          type: "integer"
+          format: "int32"
+          example: 789456
+        type:
+          type: "string"
+          nullable: true
+          example: "BankAccount"
+        paymentAmount:
+          type: "number"
+          format: "double"
+          example: 250.02
+        paymentDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        processDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        cancelDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        dateEntered:
+          type: "string"
+          format: "date-time"
+        referenceNumber:
+          type: "string"
+          nullable: true
+          example: "0000000001W"
+        routingNumber:
+          type: "string"
+          nullable: true
+          example: "091408598"
+        paidFrom:
+          type: "string"
+          nullable: true
+          example: "****8910"
+        paymentStatus:
+          type: "string"
+          nullable: true
+          example: "Scheduled"
+        isDeletable:
+          type: "boolean"
+        bankName:
+          type: "string"
+          nullable: true
+          example: "First Premier"
+      additionalProperties: false
+    PlasticResponse:
+      type: "object"
+      properties:
+        cardholderName:
+          type: "string"
+          nullable: true
+          example: "John Doe"
+        trackingNumber:
+          type: "string"
+          nullable: true
+          example: "81790140929803202936"
+        shippingDate:
+          type: "string"
+          nullable: true
+          example: "08/30/2021"
+        requestDate:
+          type: "string"
+          nullable: true
+          example: "2021-08-29-23.01.47.121748"
+        shippingMethod:
+          type: "string"
+          nullable: true
+          example: "REGULAR MAIL"
+        requestDateDisplay:
+          type: "string"
+          nullable: true
+          example: "08/29/2021"
+        status:
+          type: "string"
+          nullable: true
+          example: "SHIPPED"
+      additionalProperties: false
+    PlasticShippingInfoResponse:
+      type: "object"
+      properties:
+        shipAddress:
+          type: "string"
+          nullable: true
+          example: "PO BOX 1234567890 NEWARK, CA 94560-0844"
+        saveResult:
+          $ref: "#/components/schemas/CustomDataClasSaveResult"
+      additionalProperties: false
+    ProblemDetails:
+      type: "object"
+      properties:
+        type:
+          type: "string"
+          nullable: true
+        title:
+          type: "string"
+          nullable: true
+        status:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        detail:
+          type: "string"
+          nullable: true
+        instance:
+          type: "string"
+          nullable: true
+      additionalProperties: {}
+    Profile:
+      type: "object"
+      properties:
+        address1:
+          type: "string"
+          nullable: true
+          example: "221 Baker St"
+        address2:
+          type: "string"
+          nullable: true
+          example: "Apt B"
+        city:
+          type: "string"
+          nullable: true
+          example: "Sioux Falls"
+        state:
+          type: "string"
+          nullable: true
+          example: "SD"
+        zipCode:
+          type: "string"
+          nullable: true
+          example: "57104"
+        homePhone:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        workPhone:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        cellPhone1:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        cellPhone2:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        emailAddress:
+          type: "string"
+          nullable: true
+          example: "EmailAddr@web.com"
+        canEditAddress:
+          type: "boolean"
+        canEditPhoneNumber:
+          type: "boolean"
+      additionalProperties: false
+    ProfileUpdate:
+      type: "object"
+      properties:
+        address1:
+          type: "string"
+          nullable: true
+          example: "221 Baker St"
+        address2:
+          type: "string"
+          nullable: true
+          example: "Apt B"
+        city:
+          type: "string"
+          nullable: true
+          example: "Sioux Falls"
+        state:
+          type: "string"
+          nullable: true
+          example: "SD"
+        zipCode:
+          type: "string"
+          nullable: true
+          example: "57104"
+        homePhone:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        workPhone:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        cellPhone1:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        cellPhone2:
+          type: "string"
+          nullable: true
+          example: "6055551234"
+        emailAddress:
+          type: "string"
+          nullable: true
+          example: "EmailAddr@web.com"
+        canEditAddress:
+          type: "boolean"
+        canEditPhoneNumber:
+          type: "boolean"
+        applyToAccountHandlesList:
+          type: "array"
+          items:
+            type: "string"
+          nullable: true
+          example:
+          - "asnk9-1235-2553-a15d8"
+      additionalProperties: false
+    RequestPinMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        resultsMessage:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    RequestPinResponse:
+      type: "object"
+      properties:
+        cmsMessage:
+          type: "string"
+          nullable: true
+          example: "Returns cms RequestPinMobilePage ResultsMessage with cashAPR and\
+            \ cashAvailable populated."
+      additionalProperties: false
+    searchResults:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          nullable: true
+          example: "#result-50UH7rvcAa4hb1RmFppjm9-fragment-1"
+        url:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+          example: "What national holiday in Mexico has picnickers munching chocolate\
+            \ coffins and sugar skulls?"
+        description:
+          type: "string"
+          nullable: true
+          example: "The Day of the Dead"
+        dateModified:
+          type: "string"
+          format: "date-time"
+          example: "2016-05-17T11:05:54.864Z"
+        datePublished:
+          type: "string"
+          format: "date-time"
+          example: "2016-05-17T11:05:54.864Z"
+      additionalProperties: false
+    StatementListResponse:
+      type: "object"
+      properties:
+        statementId:
+          type: "string"
+          nullable: true
+          example: "222"
+        statementDate:
+          type: "string"
+          format: "date-time"
+      additionalProperties: false
+    StatementResponse:
+      type: "object"
+      properties:
+        pdfStatement:
+          type: "string"
+          format: "byte"
+          nullable: true
+      additionalProperties: false
+    StatementsMobilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        rholdMessageText:
+          type: "string"
+          nullable: true
+        stormPostExceptionMessage:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+        communicationSettingsLinkText:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    SystemOptions:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        showConsumerAlert:
+          type: "boolean"
+        blogURL:
+          type: "string"
+          nullable: true
+        disclosureURL:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    TechnicalRequirements:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    TechnicalRequirementsPageViewModel:
+      type: "object"
+      properties:
+        technicalRequirements:
+          $ref: "#/components/schemas/TechnicalRequirements"
+        browserVersionList:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/BrowserVersions"
+          nullable: true
+      additionalProperties: false
+    TransactionDetailsResponse:
+      type: "object"
+      properties:
+        transactionDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+          example: "2021-07-01 14:30:00"
+        datePosted:
+          type: "string"
+          format: "date-time"
+          nullable: true
+          example: "2021-07-07 00:00:00"
+        referenceNumber:
+          type: "string"
+          nullable: true
+          example: "D02210608162602P0002"
+        merchantDescription:
+          type: "string"
+          nullable: true
+          example: "PREMIER BANKCARD"
+        transactionAmount:
+          type: "number"
+          format: "double"
+          example: 150
+      additionalProperties: false
+    TransactionHistoryPageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    UpdateProfilePageConfiguration:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/AbstractCmsPage"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        bodyText:
+          type: "string"
+          nullable: true
+        footerText:
+          type: "string"
+          nullable: true
+        confirmationBodyText:
+          type: "string"
+          nullable: true
+        emailDisclaimer:
+          type: "string"
+          nullable: true
+        cellPhoneDisclaimer:
+          type: "string"
+          nullable: true
+        addressStandardizationMessage:
+          type: "string"
+          nullable: true
+        ceaseDesistMessage:
+          type: "string"
+          nullable: true
+        movePhoneNumberMsg1:
+          type: "string"
+          nullable: true
+        movePhoneNumberMsg2:
+          type: "string"
+          nullable: true
+        movePhoneNumberMsg3:
+          type: "string"
+          nullable: true
+        showIntermediateWarning:
+          type: "boolean"
+        name:
+          type: "string"
+          nullable: true
+        pageTitle:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    UserAccount:
+      type: "object"
+      properties:
+        accountHandle:
+          type: "string"
+          format: "uuid"
+        annualCharge:
+          type: "number"
+          format: "double"
+        appEnterDate:
+          type: "string"
+          format: "date-time"
+        applicantHandle:
+          type: "string"
+          format: "uuid"
+        applicationBalance:
+          type: "number"
+          format: "double"
+        applicationPaymentUrl:
+          type: "string"
+          nullable: true
+        applicationStatus:
+          type: "string"
+          nullable: true
+        availableCredit:
+          type: "number"
+          format: "double"
+        balanceType:
+          type: "string"
+          nullable: true
+        currentBalance:
+          type: "number"
+          format: "double"
+        currentUnpaidBalance:
+          type: "number"
+          format: "double"
+        creditLimit:
+          type: "number"
+          format: "double"
+        defaultAccount:
+          type: "boolean"
+        displayEStatementPrompt:
+          type: "boolean"
+        dob:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        firstName:
+          type: "string"
+          nullable: true
+        lastName:
+          type: "string"
+          nullable: true
+        isSplitElectronicDelivery:
+          type: "boolean"
+        lastPaymentAmount:
+          type: "number"
+          format: "double"
+        lastPaymentDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        lastStatementBalance:
+          type: "number"
+          format: "double"
+        maskedAccountNumber:
+          type: "string"
+          nullable: true
+        minimumAmountDue:
+          type: "number"
+          format: "double"
+        nextStatementHoldCode:
+          type: "string"
+          nullable: true
+        paymentDueBy:
+          type: "string"
+          nullable: true
+        paymentPastDue:
+          type: "boolean"
+        referenceNumber:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        scheduledWithdrawDate:
+          type: "string"
+          format: "date-time"
+          nullable: true
+        showAnnualFeeMessage:
+          type: "boolean"
+        showMultipleAccountsMessage:
+          type: "boolean"
+        status:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+    ValidationProblemDetails:
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/ProblemDetails"
+      properties:
+        errors:
+          type: "object"
+          additionalProperties:
+            type: "array"
+            items:
+              type: "string"
+          nullable: true
+          readOnly: true
+      additionalProperties: {}
+    VerifyPassword:
+      type: "object"
+      properties:
+        currentPassword:
+          type: "string"
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    oauth2:
+      type: "oauth2"
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://devidentity.premier-np.com/connect/authorize"
+          tokenUrl: "https://devidentity.premier-np.com/connect/token"
+          scopes:
+            mpcMobileApi: ""
+            offline_access: ""
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: http://localhost:8080/api/v1/.MobileApi.v3/v1

@@ -8,19 +8,18 @@ services:
     ports:
       - 27017:27017
   app:
+    depends_on:
+      - mongo
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: application
-    volumes:
-      - ${PWD}:${PWD}
-      - go:/go
-      - rootgocache:/root/.cache
-    working_dir: ${PWD}
-    image: golang:1.18
     environment:
       - MONGO_URI=mongodb://mongo:27017
       - MONGO_DB_NAME=database-name
     command: go run .
     ports:
     - 8080:1323
-volumes:
-  go:
-  rootgocache:
+    volumes:
+      - ${PWD}:${PWD}
+    working_dir: ${PWD}
