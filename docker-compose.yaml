@@ -1,26 +1,24 @@
-version: '3'
+version: '3.8'
+networks:
+  utrade-dev:
+    name: utrade-dev
 services:
+  app:
+    networks:
+      utrade-dev:
+    image: golang:1.18
+    env_file:
+      - .env
+    volumes:
+      - ${PWD}:${PWD}:cached
+    command: go run .
   mongo:
-    container_name: database
+    networks:
+      utrade-dev:
+        aliases:
+          - mongo
     image: mongo:5.0.9
     environment:
-      - MONGO_INITDB_DATABASE=database-name
+      - MONGO_INITDB_DATABASE=utrade-dev
     ports:
       - 27017:27017
-  app:
-    container_name: application
-    volumes:
-      - ${PWD}:${PWD}
-      - go:/go
-      - rootgocache:/root/.cache
-    working_dir: ${PWD}
-    image: golang:1.18
-    environment:
-      - MONGO_URI=mongodb://mongo:27017
-      - MONGO_DB_NAME=database-name
-    command: go run .
-    ports:
-    - 8080:1323
-volumes:
-  go:
-  rootgocache:

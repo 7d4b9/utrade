@@ -1,6 +1,6 @@
 {
 	"name": "Go & PostgreSQL",
-	"dockerComposeFile": "docker-compose.yml",
+	"dockerComposeFile": ["../docker-compose.yaml","docker-compose.yaml"],
 	"service": "app",
 	// Configure tool-specific properties.
 	"features": {
@@ -25,12 +25,11 @@
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
 				"azuretools.vscode-docker",
-				"azuretools.vscode-docker",
 				"ceintl.vscode-language-pack-fr",
 				"ckolkman.vscode-postgres",
 				"cucumberopen.cucumber-official",
 				"eamodio.gitlens",
-				"golang.Go",
+				"golang.go",
 				"googlecloudtools.cloudcode",
 				"mongodb.mongodb-vscode",
 				"redhat.vscode-yaml"
