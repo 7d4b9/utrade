@@ -1,0 +1,24 @@
+version: '3.8'
+networks:
+  utrade-dev:
+    name: utrade-dev
+services:
+  app:
+    networks:
+      utrade-dev:
+    image: golang:1.18
+    env_file:
+      - .env
+    volumes:
+      - ${PWD}:${PWD}:cached
+    command: go run .
+  mongo:
+    networks:
+      utrade-dev:
+        aliases:
+          - mongo
+    image: mongo:5.0.9
+    environment:
+      - MONGO_INITDB_DATABASE=utrade-dev
+    ports:
+      - 27017:27017
