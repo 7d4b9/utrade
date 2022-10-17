@@ -1,0 +1,46 @@
+version: '3.8'
+networks:
+  utrade-dev:
+    name: utrade-dev
+volumes:
+  postgres-data:
+    name: utrade-dev-postgres-data
+services:
+  app:
+    networks:
+      utrade-dev:
+        aliases:
+          - dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 1.19.2-bullseye
+        NODE_VERSION: "lts/*"
+    env_file:
+      - .env
+    init: true
+    volumes:
+      - ${PWD}:${PWD}:cached
+    command: sleep infinity
+  mongo:
+    networks:
+      utrade-dev:
+        aliases:
+          - mongo
+    image: mongo:5.0.9
+    environment:
+      - MONGO_INITDB_DATABASE=utrade-dev
+    ports:
+      - 27017:27017
+  postgres:
+    networks:
+      utrade-dev:
+        aliases:
+          - postgres
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - .env
